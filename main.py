@@ -62,3 +62,10 @@ def reconfigure(api_client):
         input("passer au suivant ?")
 
     api_client.patch(service['home'], data={'need_regen': error})  # regen it if there is an error
+
+for service in api_client.list("services/regen/"):
+    if service['hostname'] == client_hostname and \
+        service['service_name'] == 'dns' and \
+        service['need_regen']:
+        reconfigure(api_client)
+        api_client.patch(service['api_url'], data={'need_regen': False})
